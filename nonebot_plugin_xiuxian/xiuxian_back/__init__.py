@@ -1123,10 +1123,6 @@ async def _(bot: Bot, event: MessageEvent, args: Message = CommandArg()):
     mode = args.extract_plain_text().strip()
     user_id, group_id, mess = await data_check(bot, event)
     is_in_group = is_in_groups(event)  # True在，False不在
-    guild_num = group_id.split('@')
-    guild_id = guild_num[0]
-    channel_type = get_guild_channel_list(guild_id)
-    print("频道类型", channel_type)
 
     if mode == '开启':
         if is_in_group:

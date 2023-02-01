@@ -371,9 +371,9 @@ async def _mix_elixir(bot: Bot, event: MessageEvent):
             msg = ' '.join(l_msg)
             if XiuConfig().img:
                 pic = await get_msg_pic(msg)
-                await shop_added_by_admin.finish(MessageSegment.image(pic), at_sender=True)
+                await mix_elixir.finish(MessageSegment.image(pic), at_sender=True)
             else:
-                await shop_added_by_admin.finish(msg, at_sender=True)
+                await mix_elixir.finish(msg, at_sender=True)
         msg = f"请道友输入配方公式 或者 取消，若想自己合成，请参考炼丹配方帮助"
         if XiuConfig().img:
             pic = await get_msg_pic(msg)
