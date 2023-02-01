@@ -64,40 +64,82 @@ load_all_plugins(
 
 
 @command.qq_binding.handle()
-async def _(bot: Bot, event: GuildMessageEvent, args: Message = CommandArg()) -> None:
+async def qq_bangding(bot: Bot, event: GuildMessageEvent, args: Message = CommandArg()):
     """频道tiny_id与user_id绑定"""
+    global bd_user_qq
+    await data_check_conf(bot, event)
     isUser, user_info, msg = check_user(event)
     if isUser: # 判断频道id是否已绑定QQ
         if user_info.user_id:
             msg = "道友已经绑定过QQ，请勿重复绑定!!!"
             if XiuConfig().img:
-                pic = await get_msg_pic(f"@{event.sender.nickname}" + msg)
-                await qq_binding.finish(MessageSegment.image(pic))
+                pic = await get_msg_pic(msg)
+                await qq_binding.finish(MessageSegment.image(pic), at_sender=True)
             else:
                 await qq_binding.finish(msg)
     
     msg = args.extract_plain_text().strip()
     user_qq = re.findall("\d+", msg)  ## QQ号码
-    user_qq = user_qq[0]
-    tiny_id = event.get_user_id()
-    user_qq_info = sql_message.get_user_message(user_qq)
+    try:
+        bd_user_qq = user_qq[0]
+    except:
+        msg = "道友莫要胡闹，请输入正确的QQ号码"
+        if XiuConfig().img:
+            pic = await get_msg_pic(msg)
+            await qq_binding.finish(MessageSegment.image(pic), at_sender=True)
+        else:
+            await qq_binding.finish(msg, at_sender=True)
+
+    user_qq_info = sql_message.get_user_message(bd_user_qq)
     if user_qq_info is not None: # 判断QQ是否被绑定过
         if user_qq_info.tiny_id:
-            msg = f"QQ: {user_qq} 已经被绑定！"
+            msg = f"哦豁，道友绑定失败了，有人抢先道友了一步"
             if XiuConfig().img:
-                pic = await get_msg_pic(f"@{event.sender.nickname}" + msg)
-                await qq_binding.finish(MessageSegment.image(pic))
+                pic = await get_msg_pic(msg)
+                await qq_binding.finish(MessageSegment.image(pic), at_sender=True)
             else:
-                await qq_binding.finish(msg)
+                await qq_binding.finish(msg, at_sender=True)
 
-    binding.setdefault(tiny_id,[]).append(user_qq)
-    sql_message.update_tiny_id(tiny_id, user_qq)
-    msg = f"已将QQ {user_qq} 与频道ID {tiny_id} 绑定。"
+    msg = f"道友是否绑定QQ {bd_user_qq} ，请回复 [确认/确定 或者 取消]"
     if XiuConfig().img:
-        pic = await get_msg_pic(f"@{event.sender.nickname}" + msg)
-        await qq_binding.finish(MessageSegment.image(pic))
+        pic = await get_msg_pic(msg)
+        await qq_binding.pause(MessageSegment.image(pic), at_sender=True)
     else:
-        await qq_binding.finish(msg)
+        await qq_binding.pause(msg, at_sender=True)
+
+@command.qq_binding.handle()
+async def qq_bangding(bot: Bot, event: GuildMessageEvent, mode : str = EventPlainText()):
+    """频道tiny_id与user_id绑定"""
+    await data_check_conf(bot, event)
+
+    if mode not in ['确认', '确定', '取消']:
+        msg = "指令错误，应该为 确认/确定或取消！"
+        if XiuConfig().img:
+            pic = await get_msg_pic(msg)
+            await qq_binding.reject(prompt=MessageSegment.image(pic), at_sender=True)
+        else:
+            await qq_binding.reject(prompt=msg, at_sender=True)
+
+    tiny_id = event.get_user_id()
+    user_qq_info = sql_message.get_user_message(bd_user_qq)
+    if mode == "确认" or mode == "确定":
+        if user_qq_info:
+            sql_message.update_tiny_id(tiny_id, bd_user_qq)
+        else:
+            binding.setdefault(tiny_id,[]).append(bd_user_qq)
+        msg = f"已将QQ {bd_user_qq} 与频道ID {tiny_id} 绑定。"
+        if XiuConfig().img:
+            pic = await get_msg_pic(msg)
+            await qq_binding.finish(MessageSegment.image(pic), at_sender=True)
+        else:
+            await qq_binding.finish(msg, at_sender=True)
+    else:
+        msg = "本次操作已取消"
+        if XiuConfig().img:
+            pic = await get_msg_pic(msg)
+            await qq_binding.finish(MessageSegment.image(pic), at_sender=True)
+        else:
+            await qq_binding.finish(msg, at_sender=True)
 
 @command.run_xiuxian.handle()
 async def _(bot: Bot, event: MessageEvent, args: Message = CommandArg()) -> None:
