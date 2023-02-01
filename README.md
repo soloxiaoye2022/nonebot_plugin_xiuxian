@@ -4,7 +4,7 @@ _:tada::tada::tada:修仙模拟器！:tada::tada::tada:_
 
 ## 简介
 
-本插件主要为实现群聊修仙功能,最近经常封号，请自行判断后再使用，已默认转成图片模式，如需关闭，可在config.py处调整img字段为false
+本插件主要为实现群聊修仙功能并适配了频道，并实现频道与群聊数据互通, 最近经常封号，请自行判断后再使用，已默认转成图片模式，如需关闭，可在config.py处调整img字段为false
 
 ## 设定征集中，有好的想法可以推送给我哦~~~
 
@@ -43,7 +43,15 @@ git clone https://github.com/s52047qwas/nonebot_plugin_xiuxian.git
 使用pip的，在GitHub处下载data文件夹，把data文件夹中的全部内容移动到bot的数据文件夹中<br>
 bot的数据文件夹一般为bot.py同级目录下的data文件夹
 
-3、加载插件
+3、安装频道补丁
+
+- 使用 pip 安装频道补丁
+
+```
+pip install nonebot_plugin_guild_patch -i https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+4、加载插件
 
 - 然后在bot.py文件中添加
 
@@ -51,9 +59,9 @@ bot的数据文件夹一般为bot.py同级目录下的data文件夹
 nonebot.load_plugin('nonebot_plugin_xiuxian')
 ```
 
-4、如果遇到问题，请先百度和查看下方的 【一些问题】
+5、如果遇到问题，请先百度和查看下方的 【一些问题】
 
-5、如解决不了进交流群：760517008 提问，提问请贴上完整的日志
+6、如解决不了进交流群：760517008 提问，提问请贴上完整的日志
 
 ## 配置文件
 1、配置文件一般在data/xiuxian文件夹下，自行按照json格式修改即可，一些字段的含义可以进群交流<br>
