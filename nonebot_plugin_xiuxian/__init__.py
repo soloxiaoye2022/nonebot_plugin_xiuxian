@@ -46,7 +46,7 @@ sect_out_check = {}  # 退出宗门或踢出宗门信息记录
 sql_message = XiuxianDateManage()  # sql类
 
 from nonebot import load_all_plugins
-src = 'extensive_plugin.'
+src = ''
 load_all_plugins(
         [
             f'{src}nonebot_plugin_xiuxian.xiuxian_boss',
