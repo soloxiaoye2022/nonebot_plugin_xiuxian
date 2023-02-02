@@ -17,7 +17,7 @@ from ..data_source import jsondata
 from .draw_user_info import draw_user_info_img
 from ..cd_manager import add_cd, check_cd, cd_msg
 from .infoconfig import get_config
-from ..utils import data_check_conf
+from ..utils import data_check_conf, check_user
 from ..read_buff import UserBuffDate
 from nonebot_plugin_guild_patch import (
     GUILD,
@@ -41,12 +41,14 @@ sql_message = XiuxianDateManage()  # sql类
 async def _(bot: Bot, event: MessageEvent):
     """我的修仙信息"""
     await data_check_conf(bot, event)
-
+    isUser, user_info, msg = check_user(event)
+    if not isUser:
+        await xiuxian_message.finish(msg, at_sender=True)
+            
     if cd := check_cd(event, '查询信息'):
         # 如果 CD 还没到 则直接结束
         await xiuxian_message.finish(cd_msg(cd), at_sender=True)
         
-    
     try:
         user_id, group_id, mess = await data_check(bot, event)
     except MsgError:
