@@ -361,7 +361,7 @@ async def _mix_elixir(bot: Bot, event: MessageEvent):
             msg += f"主药：{v['配方']['主药']}，{v['配方']['主药_level']}，数量：{v['配方']['主药_num']}\n"
             msg += f"药引：{v['配方']['药引']}，{v['配方']['药引_level']}，数量：{v['配方']['药引_num']}\n"
             if v['配方']['辅药_num'] != 0:
-                msg += f"辅药：{v['配方']['辅药']}，{v['配方']['辅药_level']}，数量：{v['配方']['辅药_num']}\n"
+                msg += f"辅药：{v['配方']['辅药']}，{v['配方']['辅药_level']}，数量：{v['配方']['辅药_num']}\n\n"
             l_msg.append(msg)
         if len(l_msg) > 51:
             l_msg = l_msg[:50]
@@ -369,11 +369,7 @@ async def _mix_elixir(bot: Bot, event: MessageEvent):
             await send_forward_msg(bot, event, '配方', bot.self_id, l_msg)
         elif isinstance(event, GuildMessageEvent):
             msg = ' '.join(l_msg)
-            if XiuConfig().img:
-                pic = await get_msg_pic(msg)
-                await mix_elixir.finish(MessageSegment.image(pic), at_sender=True)
-            else:
-                await mix_elixir.finish(msg, at_sender=True)
+            await mix_elixir.send(msg, at_sender=True)
         msg = f"请道友输入配方公式 或者 取消，若想自己合成，请参考炼丹配方帮助"
         if XiuConfig().img:
             pic = await get_msg_pic(msg)
